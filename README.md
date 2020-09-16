@@ -66,3 +66,7 @@ The subdirectory of "basepath"(which is used in "DOTA.py", "ImgSplit.py") is in 
 └── labelTxt
 ```
 
+### New instructions
+
+Install using `python setup.py install`. Requires swig to be installed.
+
