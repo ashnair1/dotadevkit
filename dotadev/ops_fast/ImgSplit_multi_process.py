@@ -44,7 +44,7 @@ def cal_line_length(point1, point2):
 
 
 def split_single_warp(name, split_base, rate, extent):
-    split_base.SplitSingle(name, rate, extent)
+    split_base.split_single(name, rate, extent)
 
 
 class splitbase:
@@ -303,7 +303,7 @@ class splitbase:
 if __name__ == "__main__":
     # example usage of ImgSplit
     # start = time.clock()
-    # split = splitbase(r'/data/dj/dota/val',
+    # split = ImgSplitter(r'/data/dj/dota/val',
     #                    r'/data/dj/dota/val_1024_debugmulti-process_refactor') # time cost 19s
     # # split.splitdata(1)
     # # split.splitdata(2)

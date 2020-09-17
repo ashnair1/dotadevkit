@@ -1,28 +1,28 @@
-import os
-import numpy as np
-import cv2
 import copy
-from dotadev.misc import dota_utils as util
+import cv2
+import numpy as np
+from pathlib import Path
 
 
-class splitbase:
+class ImgSplitter:
     def __init__(self, srcpath, dstpath, gap=100, subsize=1024, ext=".png"):
-        self.srcpath = srcpath
-        self.outpath = dstpath
+        self.srcpath = Path(srcpath)
+        self.dstpath = Path(dstpath)
         self.gap = gap
         self.subsize = subsize
         self.slide = self.subsize - self.gap
-        self.srcpath = srcpath
-        self.dstpath = dstpath
         self.ext = ext
 
-    def saveimagepatches(self, img, subimgname, left, up, ext=".png"):
-        subimg = copy.deepcopy(img[up : (up + self.subsize), left : (left + self.subsize)])
-        outdir = os.path.join(self.dstpath, subimgname + ext)
-        cv2.imwrite(outdir, subimg)
+        if self.dstpath.exists() is False:
+            self.dstpath.mkdir()
 
-    def SplitSingle(self, name, rate, extent):
-        img = cv2.imread(os.path.join(self.srcpath, name + extent))
+    def savepatches(self, img, subimgname, left, up, ext=".png"):
+        subimg = copy.deepcopy(img[up : (up + self.subsize), left : (left + self.subsize)])
+        outdir = self.dstpath / (subimgname + ext)
+        cv2.imwrite(str(outdir), subimg)
+
+    def split_single(self, name, rate, extent):
+        img = cv2.imread(str(self.srcpath / (name + extent)))
         assert np.shape(img) != ()
 
         if rate != 1:
@@ -43,7 +43,7 @@ class splitbase:
                 if up + self.subsize >= height:
                     up = max(height - self.subsize, 0)
                 subimgname = outbasename + str(left) + "___" + str(up)
-                self.saveimagepatches(resizeimg, subimgname, left, up)
+                self.savepatches(resizeimg, subimgname, left, up)
                 if up + self.subsize >= height:
                     break
                 else:
@@ -54,16 +54,13 @@ class splitbase:
                 left = left + self.slide
 
     def splitdata(self, rate):
-        imagelist = util.GetFileFromThisRootDir(self.srcpath)
-        imagenames = [
-            util.custombasename(x) for x in imagelist if (util.custombasename(x) != "Thumbs")
-        ]
+        imagenames = [im.stem for im in self.srcpath.iterdir()]
         for name in imagenames:
-            self.SplitSingle(name, rate, self.ext)
+            self.split_single(name, rate, self.ext)
 
 
 if __name__ == "__main__":
-    split = splitbase(
+    split = ImgSplitter(
         r"/home/ashwin/Desktop/Projects/DOTA_devkit/example/images",
         r"/home/ashwin/Desktop/Projects/DOTA_devkit/example/imagesSplit",
     )
