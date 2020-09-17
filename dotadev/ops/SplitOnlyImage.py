@@ -13,23 +13,23 @@ class ImgSplitter:
         self.slide = self.subsize - self.gap
         self.ext = ext
 
-        if self.dstpath.exists() is False:
+        if not self.dstpath.exists():
             self.dstpath.mkdir()
 
-    def savepatches(self, img, subimgname, left, up, ext=".png"):
+    def saveimagepatches(self, img, subimgname, left, up, ext=".png"):
         subimg = copy.deepcopy(img[up : (up + self.subsize), left : (left + self.subsize)])
         outdir = self.dstpath / (subimgname + ext)
         cv2.imwrite(str(outdir), subimg)
 
-    def split_single(self, name, rate, extent):
-        img = cv2.imread(str(self.srcpath / (name + extent)))
+    def split_single(self, name, scale, ext):
+        img = cv2.imread(str(self.srcpath / (name + ext)))
         assert np.shape(img) != ()
 
-        if rate != 1:
-            resizeimg = cv2.resize(img, None, fx=rate, fy=rate, interpolation=cv2.INTER_CUBIC)
+        if scale != 1:
+            resizeimg = cv2.resize(img, None, fx=scale, fy=scale, interpolation=cv2.INTER_CUBIC)
         else:
             resizeimg = img
-        outbasename = name + "__" + str(rate) + "__"
+        outbasename = name + "__" + str(scale) + "__"
 
         weight = np.shape(resizeimg)[1]
         height = np.shape(resizeimg)[0]
@@ -43,7 +43,7 @@ class ImgSplitter:
                 if up + self.subsize >= height:
                     up = max(height - self.subsize, 0)
                 subimgname = outbasename + str(left) + "___" + str(up)
-                self.savepatches(resizeimg, subimgname, left, up)
+                self.saveimagepatches(resizeimg, subimgname, left, up)
                 if up + self.subsize >= height:
                     break
                 else:
@@ -53,10 +53,10 @@ class ImgSplitter:
             else:
                 left = left + self.slide
 
-    def splitdata(self, rate):
+    def splitdata(self, scale):
         imagenames = [im.stem for im in self.srcpath.iterdir()]
         for name in imagenames:
-            self.split_single(name, rate, self.ext)
+            self.split_single(name, scale, self.ext)
 
 
 if __name__ == "__main__":

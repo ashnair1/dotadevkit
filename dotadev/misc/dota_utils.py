@@ -6,7 +6,6 @@ import os
 import re
 import math
 
-# import polyiou
 """
     some basic functions which are useful for process DOTA data
 """
@@ -169,6 +168,35 @@ def dots4ToRec8(poly):
 def dots2ToRec8(rec):
     xmin, ymin, xmax, ymax = rec[0], rec[1], rec[2], rec[3]
     return xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax
+
+
+def poly5Topoly4(poly):
+    distances = [
+        cal_line_length(
+            (poly[i * 2], poly[i * 2 + 1]),
+            (poly[(i + 1) * 2], poly[(i + 1) * 2 + 1]),
+        )
+        for i in range(int(len(poly) / 2 - 1))
+    ]
+    distances.append(cal_line_length((poly[0], poly[1]), (poly[8], poly[9])))
+    pos = np.array(distances).argsort()[0]
+    count = 0
+    outpoly = []
+    while count < 5:
+        # print('count:', count)
+        if count == pos:
+            outpoly.append((poly[count * 2] + poly[(count * 2 + 2) % 10]) / 2)
+            outpoly.append((poly[(count * 2 + 1) % 10] + poly[(count * 2 + 3) % 10]) / 2)
+            count = count + 1
+        elif count == (pos + 1) % 5:
+            count = count + 1
+            continue
+
+        else:
+            outpoly.append(poly[count * 2])
+            outpoly.append(poly[count * 2 + 1])
+            count = count + 1
+    return outpoly
 
 
 def groundtruth2Task1(srcpath, dstpath):

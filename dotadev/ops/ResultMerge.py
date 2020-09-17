@@ -4,11 +4,11 @@
     search for PATH_TO_BE_CONFIGURED to config the paths
     Note, the evaluation is on the large scale images
 """
-import os
 import numpy as np
-import dota_utils as util
 import re
-import polyiou
+
+from dotadev import polyiou
+from pathlib import Path
 
 # the thresh for nms when merge image
 nms_thresh = 0.3
@@ -111,12 +111,16 @@ def poly2origpoly(poly, x, y, rate):
 
 
 def mergebase(srcpath, dstpath, nms):
-    filelist = util.GetFileFromThisRootDir(srcpath)
+
+    srcpath = Path(srcpath)
+    dstpath = Path(dstpath)
+
+    filelist = [f for f in srcpath.iterdir()]
     for fullname in filelist:
-        name = util.custombasename(fullname)
+        name = fullname.stem
         # print('name:', name)
-        dstname = os.path.join(dstpath, name + ".txt")
-        with open(fullname, "r") as f_in:
+        dstname = dstpath / (name + ".txt")
+        with open(str(fullname), "r") as f_in:
             nameboxdict = {}
             lines = f_in.readlines()
             splitlines = [x.strip().split(" ") for x in lines]
@@ -144,7 +148,7 @@ def mergebase(srcpath, dstpath, nms):
                     nameboxdict[oriname] = []
                 nameboxdict[oriname].append(det)
             nameboxnmsdict = nmsbynamedict(nameboxdict, nms, nms_thresh)
-            with open(dstname, "w") as f_out:
+            with open(str(dstname), "w") as f_out:
                 for imgname in nameboxnmsdict:
                     for det in nameboxnmsdict[imgname]:
                         # print('det:', det)
@@ -179,5 +183,8 @@ def mergebypoly(srcpath, dstpath):
 
 if __name__ == "__main__":
     # see demo for example
-    mergebypoly(r"path_to_configure", r"path_to_configure")
+    mergebypoly(
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/dota_dets",
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/labelTxt_remerged",
+    )
     # mergebyrec()
