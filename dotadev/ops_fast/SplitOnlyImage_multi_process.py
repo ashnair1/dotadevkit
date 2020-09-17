@@ -9,15 +9,19 @@ from functools import partial
 
 def split_single_warp(name, split_base, rate, extent):
     split_base.SplitSingle(name, rate, extent)
-class splitbase():
-    def __init__(self,
-                 srcpath,
-                 dstpath,
-                 gap=100,
-                 subsize=1024,
-                 ext='.png',
-                 padding=True,
-                 num_process=32):
+
+
+class splitbase:
+    def __init__(
+        self,
+        srcpath,
+        dstpath,
+        gap=100,
+        subsize=1024,
+        ext=".png",
+        padding=True,
+        num_process=32,
+    ):
         self.srcpath = srcpath
         self.outpath = dstpath
         self.gap = gap
@@ -32,11 +36,11 @@ class splitbase():
         if not os.path.isdir(self.outpath):
             os.mkdir(self.outpath)
 
-    def saveimagepatches(self, img, subimgname, left, up, ext='.png'):
-        subimg = copy.deepcopy(img[up: (up + self.subsize), left: (left + self.subsize)])
+    def saveimagepatches(self, img, subimgname, left, up, ext=".png"):
+        subimg = copy.deepcopy(img[up : (up + self.subsize), left : (left + self.subsize)])
         outdir = os.path.join(self.dstpath, subimgname + ext)
         h, w, c = np.shape(subimg)
-        if (self.padding):
+        if self.padding:
             outimg = np.zeros((self.subsize, self.subsize, 3))
             outimg[0:h, 0:w, :] = subimg
             cv2.imwrite(outdir, outimg)
@@ -47,11 +51,11 @@ class splitbase():
         img = cv2.imread(os.path.join(self.srcpath, name + extent))
         assert np.shape(img) != ()
 
-        if (rate != 1):
+        if rate != 1:
             resizeimg = cv2.resize(img, None, fx=rate, fy=rate, interpolation=cv2.INTER_CUBIC)
         else:
             resizeimg = img
-        outbasename = name + '__' + str(rate) + '__'
+        outbasename = name + "__" + str(rate) + "__"
 
         weight = np.shape(resizeimg)[1]
         height = np.shape(resizeimg)[0]
@@ -60,20 +64,20 @@ class splitbase():
         #     return
 
         left, up = 0, 0
-        while (left < weight):
-            if (left + self.subsize >= weight):
+        while left < weight:
+            if left + self.subsize >= weight:
                 left = max(weight - self.subsize, 0)
             up = 0
-            while (up < height):
-                if (up + self.subsize >= height):
+            while up < height:
+                if up + self.subsize >= height:
                     up = max(height - self.subsize, 0)
-                subimgname = outbasename + str(left) + '___' + str(up)
+                subimgname = outbasename + str(left) + "___" + str(up)
                 self.saveimagepatches(resizeimg, subimgname, left, up)
-                if (up + self.subsize >= height):
+                if up + self.subsize >= height:
                     break
                 else:
                     up = up + self.slide
-            if (left + self.subsize >= weight):
+            if left + self.subsize >= weight:
                 break
             else:
                 left = left + self.slide
@@ -81,7 +85,9 @@ class splitbase():
     def splitdata(self, rate):
 
         imagelist = util.GetFileFromThisRootDir(self.srcpath)
-        imagenames = [util.custombasename(x) for x in imagelist if (util.custombasename(x) != 'Thumbs')]
+        imagenames = [
+            util.custombasename(x) for x in imagelist if (util.custombasename(x) != "Thumbs")
+        ]
 
         # worker = partial(self.SplitSingle, rate=rate, extent=self.ext)
         worker = partial(split_single_warp, split_base=self, rate=rate, extent=self.ext)
@@ -89,16 +95,20 @@ class splitbase():
         #
         # for name in imagenames:
         #     self.SplitSingle(name, rate, self.ext)
+
     def __getstate__(self):
         self_dict = self.__dict__.copy()
-        del self_dict['pool']
+        del self_dict["pool"]
         return self_dict
 
     def __setstate__(self, state):
         self.__dict__.update(state)
 
-if __name__ == '__main__':
-    split = splitbase(r'/home/dingjian/data/dota/val/images',
-                      r'/home/dingjian/data/dota/valsplit',
-                      num_process=32)
+
+if __name__ == "__main__":
+    split = splitbase(
+        r"/home/dingjian/data/dota/val/images",
+        r"/home/dingjian/data/dota/valsplit",
+        num_process=32,
+    )
     split.splitdata(1)

@@ -1,0 +1,9 @@
+README.md
+setup.py
+./dotadev/polyiou/polyiou.cpp
+./dotadev/polyiou/polyiou.i
+dotadev/__init__.py
+dotadev.egg-info/PKG-INFO
+dotadev.egg-info/SOURCES.txt
+dotadev.egg-info/dependency_links.txt
+dotadev.egg-info/top_level.txt
