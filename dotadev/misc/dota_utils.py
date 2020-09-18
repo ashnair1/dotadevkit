@@ -10,7 +10,7 @@ import math
     some basic functions which are useful for process DOTA data
 """
 
-wordname_15 = [
+dota_classes = [
     "plane",
     "baseball-diamond",
     "bridge",
@@ -203,7 +203,7 @@ def groundtruth2Task1(srcpath, dstpath):
     filelist = GetFileFromThisRootDir(srcpath)
     # names = [custombasename(x.strip())for x in filelist]
     filedict = {}
-    for cls in wordname_15:
+    for cls in dota_classes:
         fd = open(os.path.join(dstpath, "Task1_") + cls + r".txt", "w")
         filedict[cls] = fd
     for filepath in filelist:
