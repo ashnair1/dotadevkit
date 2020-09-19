@@ -4,27 +4,16 @@
     search for PATH_TO_BE_CONFIGURED to config the paths
     Note, the evaluation is on the large scale images
 """
-import os
 import numpy as np
 import re
-import sys
 
-import polyiou
-import pdb
-import math
-
-from multiprocessing import Pool
+from dotadev import polyiou
 from functools import partial
-
-sys.path.insert(0, "..")
-try:
-    import dota_utils as util
-except Exception:
-    import dota_kit.dota_utils as util
-
+from multiprocessing import Pool
+from pathlib import Path
 
 # the thresh for nms when merge image
-nms_thresh = 0.1
+nms_thresh = 0.3
 
 
 def py_cpu_nms_poly(dets, thresh):
@@ -56,19 +45,8 @@ def py_cpu_nms_poly(dets, thresh):
             iou = polyiou.iou_poly(polys[i], polys[order[j + 1]])
             ovr.append(iou)
         ovr = np.array(ovr)
-
-        # print('ovr: ', ovr)
-        # print('thresh: ', thresh)
-        try:
-            if math.isnan(ovr[0]):
-                pdb.set_trace()
-        except Exception:
-            pass
         inds = np.where(ovr <= thresh)[0]
-        # print('inds: ', inds)
-
         order = order[inds + 1]
-
     return keep
 
 
@@ -100,7 +78,7 @@ def py_cpu_nms_poly_fast(dets, thresh):
 
     keep = []
     while order.size > 0:
-        ovr = []
+        # ovr = []
         i = order[0]
         keep.append(i)
         # if order.size == 0:
@@ -128,11 +106,6 @@ def py_cpu_nms_poly_fast(dets, thresh):
         # ovr_index = np.array(ovr_index)
         # print('ovr: ', ovr)
         # print('thresh: ', thresh)
-        try:
-            if math.isnan(ovr[0]):
-                pdb.set_trace()
-        except Exception:
-            pass
         inds = np.where(hbb_ovr <= thresh)[0]
 
         # order_obb = ovr_index[inds]
@@ -207,9 +180,8 @@ def poly2origpoly(poly, x, y, rate):
 
 
 def mergesingle(dstpath, nms, fullname):
-    name = util.custombasename(fullname)
-    # print('name:', name)
-    dstname = os.path.join(dstpath, name + ".txt")
+    name = fullname.stem
+    dstname = dstpath / (name + ".txt")
     with open(fullname, "r") as f_in:
         nameboxdict = {}
         lines = f_in.readlines()
@@ -219,15 +191,12 @@ def mergesingle(dstpath, nms, fullname):
             splitname = subname.split("__")
             oriname = splitname[0]
             pattern1 = re.compile(r"__\d+___\d+")
-            # print('subname:', subname)
             x_y = re.findall(pattern1, subname)
             x_y_2 = re.findall(r"\d+", x_y[0])
             x, y = int(x_y_2[0]), int(x_y_2[1])
 
             pattern2 = re.compile(r"__([\d+\.]+)__\d+___")
-
             rate = re.findall(pattern2, subname)[0]
-
             confidence = splitline[1]
             poly = list(map(float, splitline[2:]))
             origpoly = poly2origpoly(poly, x, y, rate)
@@ -241,25 +210,32 @@ def mergesingle(dstpath, nms, fullname):
         with open(dstname, "w") as f_out:
             for imgname in nameboxnmsdict:
                 for det in nameboxnmsdict[imgname]:
-                    # print('det:', det)
                     confidence = det[-1]
                     bbox = det[0:-1]
                     outline = imgname + " " + str(confidence) + " " + " ".join(map(str, bbox))
-                    # print('outline:', outline)
                     f_out.write(outline + "\n")
 
 
-def mergebase_parallel(srcpath, dstpath, nms):
-    pool = Pool(16)
-    filelist = util.GetFileFromThisRootDir(srcpath)
+def mergebase_parallel(srcpath, dstpath, nms, num_process=16):
+    pool = Pool(num_process)
+    srcpath = Path(srcpath)
+    dstpath = Path(dstpath)
+    if not dstpath.exists():
+        dstpath.mkdir(parents=True)
+
+    filelist = [f for f in srcpath.iterdir()]
 
     mergesingle_fn = partial(mergesingle, dstpath, nms)
-    # pdb.set_trace()
     pool.map(mergesingle_fn, filelist)
 
 
 def mergebase(srcpath, dstpath, nms):
-    filelist = util.GetFileFromThisRootDir(srcpath)
+    srcpath = Path(srcpath)
+    dstpath = Path(dstpath)
+    if not dstpath.exists():
+        dstpath.mkdir(parents=True)
+
+    filelist = [f for f in srcpath.iterdir()]
     for filename in filelist:
         mergesingle(dstpath, nms, filename)
 
@@ -275,7 +251,7 @@ def mergebyrec(srcpath, dstpath):
     mergebase(srcpath, dstpath, py_cpu_nms)
 
 
-def mergebypoly(srcpath, dstpath):
+def mergebypoly(srcpath, dstpath, num_process):
     """
     srcpath: result files before merge and nms
     dstpath: result files after merge and nms
@@ -283,12 +259,13 @@ def mergebypoly(srcpath, dstpath):
     # srcpath = r'/home/dingjian/evaluation_task1/result/faster-rcnn-59/comp4_test_results'
     # dstpath = r'/home/dingjian/evaluation_task1/result/faster-rcnn-59/testtime'
 
-    # mergebase(srcpath,
-    #           dstpath,
-    #           py_cpu_nms_poly)
-    mergebase_parallel(srcpath, dstpath, py_cpu_nms_poly_fast)
+    mergebase_parallel(srcpath, dstpath, py_cpu_nms_poly_fast, num_process)
 
 
 if __name__ == "__main__":
-    mergebypoly(r"path_to_configure", r"path_to_configure")
+    mergebypoly(
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/dota_dets",
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/labelTxt_remerged_multi",
+        num_process=16,
+    )
     # mergebyrec()
