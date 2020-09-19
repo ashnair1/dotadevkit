@@ -2,8 +2,10 @@ import codecs
 import copy
 import cv2
 import numpy as np
-from shapely import geometry as shgeo
 from dotadev.misc import dota_utils as util
+from functools import partial
+from multiprocessing import Pool
+from shapely import geometry as shgeo
 from pathlib import Path
 
 
@@ -29,6 +31,10 @@ def choose_best_pointorder_fit_another(poly1, poly2):
     distances = np.array([np.sum((coord - dst_coordinate) ** 2) for coord in candidates])
     sorted = distances.argsort()
     return candidates[sorted[0]]
+
+
+def split_single_warp(name, split_base, rate, extent):
+    split_base.split_single(name, rate, extent)
 
 
 def calchalf_iou(poly1, poly2):
@@ -65,6 +71,8 @@ class DataSplitter:
         thresh=0.7,
         choosebestpoint=True,
         ext=".png",
+        padding=True,
+        num_process=8,
     ):
         """
         :param basepath: base path for dota data
@@ -76,6 +84,7 @@ class DataSplitter:
         :param thresh: the thresh determine whether to keep the instance if the instance is cut down in the process of split
         :param choosebestpoint: used to choose the first point for the
         :param ext: ext for the image format
+        :param padding: if True pads all images to be of the same size
         """
         self.code = code
         self.gap = gap
@@ -88,6 +97,10 @@ class DataSplitter:
         self.outlabelpath = Path(outpath) / "labelTxt"
         self.choosebestpoint = choosebestpoint
         self.ext = ext
+        self.padding = padding
+        self.num_process = num_process
+        self.pool = Pool(num_process)
+
         if not self.outimagepath.exists():
             self.outimagepath.mkdir(parents=True)
         if not self.outlabelpath.exists():
@@ -96,7 +109,13 @@ class DataSplitter:
     def saveimagepatches(self, img, subimgname, left, up):
         subimg = copy.deepcopy(img[up : (up + self.subsize), left : (left + self.subsize)])
         outdir = self.outimagepath / (subimgname + self.ext)
-        cv2.imwrite(str(outdir), subimg)
+        h, w, c = np.shape(subimg)
+        if self.padding:
+            outimg = np.zeros((self.subsize, self.subsize, 3))
+            outimg[0:h, 0:w, :] = subimg
+            cv2.imwrite(str(outdir), outimg)
+        else:
+            cv2.imwrite(str(outdir), subimg)
 
     def savepatches(self, resizeimg, objects, subimgname, left, up, right, down):
         outdir = self.outlabelpath / (subimgname + ".txt")
@@ -213,14 +232,26 @@ class DataSplitter:
 
     def splitdata(self, scale):
         imagenames = [im.stem for im in self.imagepath.iterdir()]
-        for name in imagenames:
-            self.split_single(name, scale, self.ext)
+        if self.num_process == 1:
+            for name in imagenames:
+                self.split_single(name, scale, self.ext)
+        else:
+            worker = partial(split_single_warp, split_base=self, rate=scale, extent=self.ext)
+            self.pool.map(worker, imagenames)
+
+    def __getstate__(self):
+        self_dict = self.__dict__.copy()
+        del self_dict["pool"]
+        return self_dict
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
 
 if __name__ == "__main__":
-    # example usage of ImgSplit
     split = DataSplitter(
         r"/home/ashwin/Desktop/Projects/DOTA_devkit/example",
-        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit",
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit2",
+        num_process=8,
     )
     split.splitdata(1)

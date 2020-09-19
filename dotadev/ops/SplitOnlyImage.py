@@ -1,17 +1,34 @@
 import copy
 import cv2
 import numpy as np
+from functools import partial
+from multiprocessing import Pool
 from pathlib import Path
 
 
+def split_single_warp(name, split_base, rate, extent):
+    split_base.split_single(name, rate, extent)
+
+
 class ImgSplitter:
-    def __init__(self, srcpath, dstpath, gap=100, subsize=1024, ext=".png"):
+    def __init__(
+        self,
+        srcpath,
+        dstpath,
+        gap=100,
+        subsize=1024,
+        ext=".png",
+        padding=True,
+        num_process=32,
+    ):
         self.srcpath = Path(srcpath)
         self.dstpath = Path(dstpath)
         self.gap = gap
         self.subsize = subsize
         self.slide = self.subsize - self.gap
         self.ext = ext
+        self.padding = padding
+        self.pool = Pool(num_process)
 
         if not self.dstpath.exists():
             self.dstpath.mkdir()
@@ -19,7 +36,13 @@ class ImgSplitter:
     def saveimagepatches(self, img, subimgname, left, up, ext=".png"):
         subimg = copy.deepcopy(img[up : (up + self.subsize), left : (left + self.subsize)])
         outdir = self.dstpath / (subimgname + ext)
-        cv2.imwrite(str(outdir), subimg)
+        h, w, c = np.shape(subimg)
+        if self.padding:
+            outimg = np.zeros((self.subsize, self.subsize, 3))
+            outimg[0:h, 0:w, :] = subimg
+            cv2.imwrite(str(outdir), outimg)
+        else:
+            cv2.imwrite(str(outdir), subimg)
 
     def split_single(self, name, scale, ext):
         img = cv2.imread(str(self.srcpath / (name + ext)))
@@ -55,13 +78,22 @@ class ImgSplitter:
 
     def splitdata(self, scale):
         imagenames = [im.stem for im in self.srcpath.iterdir()]
-        for name in imagenames:
-            self.split_single(name, scale, self.ext)
+        worker = partial(split_single_warp, split_base=self, rate=scale, extent=self.ext)
+        self.pool.map(worker, imagenames)
+
+    def __getstate__(self):
+        self_dict = self.__dict__.copy()
+        del self_dict["pool"]
+        return self_dict
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
 
 
 if __name__ == "__main__":
     split = ImgSplitter(
         r"/home/ashwin/Desktop/Projects/DOTA_devkit/example/images",
-        r"/home/ashwin/Desktop/Projects/DOTA_devkit/example/imagesSplit",
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/example/imagesSplit2",
+        num_process=32,
     )
     split.splitdata(1)
