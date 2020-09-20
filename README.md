@@ -1,10 +1,7 @@
 
-## Update
+## DOTA Devkit 
 
-
-<p>
-    We now add the cpu multi process version of "ImgSplit" and "ResultMerge", gpu version of polygon nms.
-</p>
+A fork of the original [DOTA_Devkit](https://github.com/CAPTAIN-WHU/DOTA_devkit) that provides a CLI for easier usage. 
 
 ## Functions
 
@@ -42,31 +39,44 @@ For the detail of <strong style="color:blue"> DOTA-v1.0</strong>, you can refer 
 
 
 ### Installation
-1. install swig
+1. Install swig
 ```
     sudo apt-get install swig
 ```
-2. create the c++ extension for python
+2. Setup library 
 ```
-    swig -c++ -python polyiou.i
-    python setup.py build_ext --inplace
+    python setup.py install
 ```
 
 ### Usage
-1. Reading and visualizing data, you can use DOTA.py
-2. Evaluating the result, you can refer to the "dota_evaluation_task1.py" and "dota_evaluation_task2.py" (or "dota-v1.5_evaluation_task1.py" and "dota-v1.5_evaluation_task2.py" for DOTA-v1.5)
-3. Split the large image, you can refer to the "ImgSplit"
-4. Merging the results detected on the patches, you can refer to the ResultMerge.py
+1. Evaluate:
 
-An example is shown in the demo.
-The subdirectory of "basepath"(which is used in "DOTA.py", "ImgSplit.py") is in the structure of
 ```
-.
-├── images
-└── labelTxt
+ dotadev evaluate \
+        /path/to/detections/Task1_{:s}.txt \
+        /path/to/dota/val/labelTxt/{:s}.txt \
+        /path/to/text/file/of/image/names \
+        1.0
 ```
 
-### New instructions
+2. Merge
 
-Install using `python setup.py install`. Requires swig to be installed.
+```
+ dotadev merge \
+        /path/to/dota/data/ \
+        /path/to/destination/directory/ \
+        8
+```
+
+3. Split
+
+Setting the `--images` flag only splits the images.
+
+```
+ dotadev split \
+        /path/to/dota/data/images \
+        /path/to/destination/directory/ \
+        8 \
+        --images
+```
 
