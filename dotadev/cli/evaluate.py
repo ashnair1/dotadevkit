@@ -11,7 +11,7 @@ from dotadev.evaluate import task1 as t1, task2 as t2
 def evaluate(detections, annotations, images, version, task1):
     """
     \b
-    Run DOTA evaluation for
+    Run evaluation for both tasks on DOTA & DOTA 1.5.
 
     \b
     Args:

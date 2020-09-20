@@ -49,6 +49,20 @@ For the detail of <strong style="color:blue"> DOTA-v1.0</strong>, you can refer 
 ```
 
 ### Usage
+Once installed, you will have access to the `dotadev` CLI. Run `dotadev --help` or `dotadev <command> --help` for further details.
+```
+Usage: dotadev [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  evaluate  Run evaluation for both tasks on DOTA & DOTA 1.5.
+  merge     Merges annotations according to DOTA Tasks.
+  split     Splits images and annotations.
+
+```
+
 1. Evaluate:
 
 ```
