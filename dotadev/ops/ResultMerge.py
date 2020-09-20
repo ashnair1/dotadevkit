@@ -12,9 +12,6 @@ from functools import partial
 from multiprocessing import Pool
 from pathlib import Path
 
-# the thresh for nms when merge image
-nms_thresh = 0.3
-
 
 def py_cpu_nms_poly(dets, thresh):
     scores = dets[:, 8]
@@ -179,7 +176,7 @@ def poly2origpoly(poly, x, y, rate):
     return origpoly
 
 
-def mergesingle(dstpath, nms, fullname):
+def mergesingle(fullname, dstpath, nms, thresh):
     name = fullname.stem
     dstname = dstpath / (name + ".txt")
     with open(fullname, "r") as f_in:
@@ -206,7 +203,7 @@ def mergesingle(dstpath, nms, fullname):
             if oriname not in nameboxdict:
                 nameboxdict[oriname] = []
             nameboxdict[oriname].append(det)
-        nameboxnmsdict = nmsbynamedict(nameboxdict, nms, nms_thresh)
+        nameboxnmsdict = nmsbynamedict(nameboxdict, nms, thresh)
         with open(dstname, "w") as f_out:
             for imgname in nameboxnmsdict:
                 for det in nameboxnmsdict[imgname]:
@@ -216,7 +213,7 @@ def mergesingle(dstpath, nms, fullname):
                     f_out.write(outline + "\n")
 
 
-def mergebase_parallel(srcpath, dstpath, nms, num_process=16):
+def mergebase_parallel(srcpath, dstpath, nms, num_process=16, thresh=0.3):
     pool = Pool(num_process)
     srcpath = Path(srcpath)
     dstpath = Path(dstpath)
@@ -225,11 +222,11 @@ def mergebase_parallel(srcpath, dstpath, nms, num_process=16):
 
     filelist = [f for f in srcpath.iterdir()]
 
-    mergesingle_fn = partial(mergesingle, dstpath, nms)
+    mergesingle_fn = partial(mergesingle, dstpath=dstpath, nms=nms, thresh=thresh)
     pool.map(mergesingle_fn, filelist)
 
 
-def mergebase(srcpath, dstpath, nms):
+def mergebase(srcpath, dstpath, nms, thresh):
     srcpath = Path(srcpath)
     dstpath = Path(dstpath)
     if not dstpath.exists():
@@ -237,35 +234,39 @@ def mergebase(srcpath, dstpath, nms):
 
     filelist = [f for f in srcpath.iterdir()]
     for filename in filelist:
-        mergesingle(dstpath, nms, filename)
+        mergesingle(filename, dstpath, nms, thresh)
 
 
-def mergebyrec(srcpath, dstpath):
+def mergebyrec(srcpath, dstpath, thresh):
     """
     srcpath: result files before merge and nms
     dstpath: result files after merge and nms
+    thresh: nms threshold
     """
     # srcpath = r'E:\bod-dataset\results\bod-v3_rfcn_2000000'
     # dstpath = r'E:\bod-dataset\results\bod-v3_rfcn_2000000_nms'
 
-    mergebase(srcpath, dstpath, py_cpu_nms)
+    mergebase(srcpath, dstpath, py_cpu_nms, thresh)
 
 
-def mergebypoly(srcpath, dstpath, num_process):
+def mergebypoly(srcpath, dstpath, num_process, nms_thresh):
     """
     srcpath: result files before merge and nms
     dstpath: result files after merge and nms
+    num_process: Number of threads
+    nms_thresh: nms threshold
     """
     # srcpath = r'/home/dingjian/evaluation_task1/result/faster-rcnn-59/comp4_test_results'
     # dstpath = r'/home/dingjian/evaluation_task1/result/faster-rcnn-59/testtime'
 
-    mergebase_parallel(srcpath, dstpath, py_cpu_nms_poly_fast, num_process)
+    mergebase_parallel(srcpath, dstpath, py_cpu_nms_poly_fast, num_process, nms_thresh)
 
 
 if __name__ == "__main__":
     mergebypoly(
         r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/dota_dets",
-        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/labelTxt_remerged_multi",
+        r"/home/ashwin/Desktop/Projects/DOTA_devkit/examplesplit/labelTxt_remerged_multi2",
         num_process=16,
+        nms_thresh=0.3,
     )
     # mergebyrec()
