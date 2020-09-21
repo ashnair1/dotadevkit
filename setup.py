@@ -15,7 +15,7 @@ polyiou_module = Extension(
 
 setup(
     name="dotadev",
-    version="0.1.7",
+    version="0.1.8",
     packages=["dotadev"],
     package_dir={"dotadev": "dotadev"},
     ext_modules=[polyiou_module],
