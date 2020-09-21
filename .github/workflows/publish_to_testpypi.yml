@@ -29,9 +29,12 @@ jobs:
       - name: Install cibuildwheel
         run: |
           python -m pip install cibuildwheel==1.6.1
+
       - name: Build wheels
         run: |
           python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_SKIP: pp* cp27-* cp35-*
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl

@@ -14,9 +14,10 @@ polyiou_module = Extension(
 
 setup(
     name="dotadev",
-    version="0.1.13",
+    version="0.1.14",
     packages=["dotadev"],
     package_dir={"dotadev": "dotadev"},
+    python_requires=">=3.6",
     ext_modules=[polyiou_module],
     install_requires=requirements,
     include_package_data=True,
