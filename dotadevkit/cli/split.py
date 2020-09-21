@@ -1,5 +1,5 @@
 import click
-from dotadev.ops import DataSplitter, ImgSplitter
+from dotadevkit.ops import DataSplitter, ImgSplitter
 
 
 @click.command()

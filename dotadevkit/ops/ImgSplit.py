@@ -2,7 +2,7 @@ import codecs
 import copy
 import cv2
 import numpy as np
-from dotadev.misc import dota_utils as util
+from dotadevkit.misc import dota_utils as util
 from functools import partial
 from multiprocessing import Pool
 from shapely import geometry as shgeo

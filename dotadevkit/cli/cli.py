@@ -1,5 +1,5 @@
 import click
-from dotadev.cli import merge, split, evaluate
+from dotadevkit.cli import merge, split, evaluate
 
 
 @click.group()

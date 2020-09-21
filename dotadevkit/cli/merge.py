@@ -1,5 +1,5 @@
 import click
-from dotadev.ops import mergebypoly, mergebyrec
+from dotadevkit.ops import mergebypoly, mergebyrec
 
 
 @click.command()

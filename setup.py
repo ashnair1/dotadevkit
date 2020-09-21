@@ -1,4 +1,4 @@
-from setuptools import setup, Extension
+from setuptools import Extension, find_packages, setup
 
 # Parse requirements.txt
 with open("requirements.txt") as f:
@@ -6,24 +6,24 @@ with open("requirements.txt") as f:
 
 # Polyiou extension
 polyiou_module = Extension(
-    "dotadev.polyiou._polyiou",
-    sources=["./dotadev/polyiou/polyiou_wrap.cpp"],
-    include_dirs=["./dotadev/polyiou"],
+    "dotadevkit.polyiou._polyiou",
+    sources=["./dotadevkit/polyiou/polyiou_wrap.cxx", "./dotadevkit/polyiou/polyiou.cpp"],
+    include_dirs=["./dotadevkit/polyiou"],
     language="c++",
 )
 
 setup(
-    name="dotadev",
-    version="0.1.14",
-    packages=["dotadev"],
-    package_dir={"dotadev": "dotadev"},
+    name="dotadevkit",
+    version="1.0.0-beta",
+    packages=find_packages(),
+    package_dir={"dotadevkit": "dotadevkit"},
     python_requires=">=3.6",
     ext_modules=[polyiou_module],
     install_requires=requirements,
     include_package_data=True,
     entry_points="""
         [console_scripts]
-        dotadev=dotadev.cli.cli:cli
+        dotadevkit=dotadevkit.cli.cli:cli
     """,
     license="MIT",
     author="Ashwin Nair",
