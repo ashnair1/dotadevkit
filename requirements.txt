@@ -1,6 +1,11 @@
+# Project requiremets
 click
 Cython
 matplotlib==3.2.1
 numpy>=1.18.4
 opencv_contrib_python
 Shapely
+
+# Packaging
+setuptools>=40.6.3
+wheel>=0.32.3
