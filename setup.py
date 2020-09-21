@@ -7,15 +7,14 @@ with open("requirements.txt") as f:
 # Polyiou extension
 polyiou_module = Extension(
     "dotadev.polyiou._polyiou",
-    sources=["./dotadev/polyiou/polyiou.i", "./dotadev/polyiou/polyiou.cpp"],
+    sources=["./dotadev/polyiou/polyiou_wrap.cpp"],
     include_dirs=["./dotadev/polyiou"],
     language="c++",
-    swig_opts=["-c++"],
 )
 
 setup(
     name="dotadev",
-    version="0.1.8",
+    version="0.1.9",
     packages=["dotadev"],
     package_dir={"dotadev": "dotadev"},
     ext_modules=[polyiou_module],
