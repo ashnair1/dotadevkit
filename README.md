@@ -28,8 +28,7 @@ Commands:
 
 ```
 
-1. Evaluate:
-
+#### Evaluate
 ```
  dotadev evaluate \
         /path/to/detections/Task1_{:s}.txt \
@@ -37,8 +36,8 @@ Commands:
         /path/to/text/file/of/image/names \
         1.0
 ```
-
-2. Merge
+ 
+#### Merge
 
 ```
  dotadev merge \
@@ -47,9 +46,9 @@ Commands:
         8
 ```
 
-3. Split
+#### Split
 
-Setting the `--images` flag only splits the images.
+Setting the `--images` flag only splits the images. If it is not set, both `images` and `labelTxt` undergo the split process.
 
 ```
  dotadev split \
