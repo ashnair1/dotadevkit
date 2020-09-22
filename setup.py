@@ -14,7 +14,11 @@ polyiou_module = Extension(
 
 setup(
     name="dotadevkit",
+    author="Ashwin Nair",
+    author_email="ash1995@gmail.com",
+    description="""DOTA Devkit CLI""",
     version="1.0.0",
+    url="https://github.com/ashnair1/DOTA_devkit",
     packages=find_packages(),
     package_dir={"dotadevkit": "dotadevkit"},
     python_requires=">=3.6",
@@ -25,10 +29,17 @@ setup(
         [console_scripts]
         dotadevkit=dotadevkit.cli.cli:cli
     """,
-    license="MIT",
-    author="Ashwin Nair",
-    author_email="ash1995@gmail.com",
-    description="""DOTA Devkit CLI""",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
+    classifiers=[
+        # Trove classifiers
+        # Full list: https://pypi.python.org/pypi?%3Aaction=list_classifiers
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7"
+        "Programming Language :: Python :: 3.8"
+        "Programming Language :: Python :: 3.9"
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
+    ],
 )

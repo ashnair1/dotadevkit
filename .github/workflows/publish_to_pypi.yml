@@ -2,9 +2,6 @@ name: Build
 
 # Publish when a (published) GitHub Release is created
 on:
-  push:
-   branches:
-     - master
   pull_request:
    branches:
      - master
