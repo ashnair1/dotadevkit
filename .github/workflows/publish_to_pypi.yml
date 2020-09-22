@@ -78,4 +78,3 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.pypi_password }}
-          repository_url: https://pypi.org
