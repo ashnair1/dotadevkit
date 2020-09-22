@@ -6,15 +6,15 @@
 # --------------------------------------------------------
 
 import numpy as np
-from dotadev import polyiou
-from dotadev.misc.dota_utils import dota_classes
+from dotadevkit.polyiou import polyiou
+from dotadevkit.misc.dota_utils import dota_classes
 
 
 def parse_gt(filename, version):
     """
 
     :param filename: ground truth file to parse
-    :parame version: DOTA version
+    :param version: DOTA version
     :return: all instances in a picture
     """
     objects = []

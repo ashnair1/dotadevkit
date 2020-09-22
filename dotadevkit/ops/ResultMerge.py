@@ -7,7 +7,7 @@
 import numpy as np
 import re
 
-from dotadev import polyiou
+from dotadevkit import polyiou
 from functools import partial
 from multiprocessing import Pool
 from pathlib import Path

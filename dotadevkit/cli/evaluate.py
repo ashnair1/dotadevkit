@@ -1,5 +1,5 @@
 import click
-from dotadev.evaluate import task1 as t1, task2 as t2
+from dotadevkit.evaluate import task1 as t1, task2 as t2
 
 
 @click.command()

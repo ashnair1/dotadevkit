@@ -6,7 +6,7 @@
 # --------------------------------------------------------
 
 import numpy as np
-from dotadev.misc.dota_utils import dota_classes
+from dotadevkit.misc.dota_utils import dota_classes
 
 
 def parse_gt(filename, version):

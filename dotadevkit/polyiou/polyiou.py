@@ -58,8 +58,7 @@ def _swig_setattr_nondynamic_class_variable(set):
 
 
 def _swig_add_metaclass(metaclass):
-    """Class decorator for adding a metaclass to a SWIG wrapped class
-    - a slimmed down version of six.add_metaclass"""
+    """Class decorator for adding a metaclass to a SWIG wrapped class - a slimmed down version of six.add_metaclass"""
 
     def wrapper(cls):
         return metaclass(cls.__name__, cls.__bases__, cls.__dict__.copy())
