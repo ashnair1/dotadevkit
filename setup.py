@@ -14,7 +14,7 @@ polyiou_module = Extension(
 
 setup(
     name="dotadevkit",
-    version="1.0.0-beta",
+    version="1.0.0",
     packages=find_packages(),
     package_dir={"dotadevkit": "dotadevkit"},
     python_requires=">=3.6",

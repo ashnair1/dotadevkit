@@ -1,7 +1,8 @@
 ## DOTA Devkit 
 
-
-[![Build](https://github.com/ashnair1/DOTA_devkit/workflows/Build/badge.svg)](https://github.com/ashnair1/DOTA_devkit/actions?query=workflow%3ABuild+branch%3Amaster++) 
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ashnair1/DOTA_devkit/Build)
+![PyPI](https://img.shields.io/pypi/v/dotadevkit)
+[![Python 3.6](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 A fork of the original [DOTA_Devkit](https://github.com/CAPTAIN-WHU/DOTA_devkit) that provides a CLI for easier usage an publically available whls for wasier installation. 
