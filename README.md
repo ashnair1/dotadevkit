@@ -1,6 +1,6 @@
 ## DOTA Devkit 
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ashnair1/DOTA_devkit/Build)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ashnair1/dotadevkit/Build)
 ![PyPI](https://img.shields.io/pypi/v/dotadevkit)
 [![Python 3.6](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
