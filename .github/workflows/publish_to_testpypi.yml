@@ -1,13 +1,13 @@
-name: Build
+name: Build and upload to TestPyPI
 
-# Publish when a (published) GitHub Release is created
+# Publish when a (published) GitHub Release is created in the dev branch
 on:
   pull_request:
-   branches:
-     - master
+    branches:
+      - dev
   release:
-   types:
-     - published
+    types:
+      - published
 
 jobs:
   build_wheels:
@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, windows-latest, macos-latest]
+        os: [ubuntu-18.04, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,17 +28,11 @@ jobs:
       - name: Install cibuildwheel
         run: |
           python -m pip install cibuildwheel==1.6.1
-
-      - name: Install Visual C++ for Python 2.7
-        if: runner.os == 'Windows'
-        run: |
-          choco install vcpython27 -f -y
-
       - name: Build wheels
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_SKIP: pp* cp27-* cp35-*
+          CIBW_BUILD: cp36-* cp37-*
       - uses: actions/upload-artifact@v2
         with:
           path: ./wheelhouse/*.whl
@@ -62,11 +56,9 @@ jobs:
           path: dist/*.tar.gz
 
   upload_pypi:
-    name: Upload to PyPi
+    name: Upload to Test PyPi
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    # Publish when a GitHub Release is created
-    if: github.event_name == 'release' && github.event.action == 'published'
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -75,4 +67,5 @@ jobs:
 
       - uses: pypa/gh-action-pypi-publish@master
         with:
-          password: ${{ secrets.pypi_password }}
+          password: ${{ secrets.test_pypi_password }}
+          repository_url: https://test.pypi.org/legacy/
