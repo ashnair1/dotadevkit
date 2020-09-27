@@ -1,3 +1,8 @@
+# --------------------------------------------------------
+# Modified by Ashwin Nair
+# Written by Jian Ding for DOTA_Devkit
+# --------------------------------------------------------
+
 """
     To use the code, users should to config detpath, annopath and imagesetfile
     detpath is the path for 15 result files, for the format, you can refer to "http://captain.whu.edu.cn/DOTAweb/tasks.html"
@@ -7,7 +12,7 @@
 import numpy as np
 import re
 
-from dotadevkit import polyiou
+from dotadevkit.polyiou import polyiou
 from functools import partial
 from multiprocessing import Pool
 from pathlib import Path

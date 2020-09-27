@@ -1,3 +1,8 @@
+# --------------------------------------------------------
+# Modified by Ashwin Nair
+# Written by Jian Ding for DOTA_Devkit
+# --------------------------------------------------------
+
 import codecs
 import copy
 import cv2
