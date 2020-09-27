@@ -1,5 +1,7 @@
-# The code is used for visulization, inspired from cocoapi
-#  Licensed under the Simplified BSD License [see bsd.txt]
+# --------------------------------------------------------
+# Modified by Ashwin Nair
+# Written by Jian Ding for DOTA_Devkit
+# --------------------------------------------------------
 
 import os
 import matplotlib.pyplot as plt

@@ -1,3 +1,8 @@
+# --------------------------------------------------------
+# Modified by Ashwin Nair
+# Written by Jian Ding for DOTA_Devkit
+# --------------------------------------------------------
+
 import dota_utils as util
 import os
 import cv2

@@ -1,3 +1,7 @@
+# --------------------------------------------------------
+# Modified by Ashwin Nair
+# Written by Jian Ding for DOTA_Devkit
+# --------------------------------------------------------
 import sys
 import codecs
 import numpy as np
