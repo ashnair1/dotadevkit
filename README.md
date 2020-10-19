@@ -1,8 +1,8 @@
 ## DOTA Devkit 
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ashnair1/dotadevkit/Build)
-![PyPI](https://img.shields.io/pypi/v/dotadevkit)
-[![Python 3.6](https://img.shields.io/badge/python-3.6+-blue.svg)](https://www.python.org/downloads/release/python-360/)
+![](https://github.com/ashnair1/dotadevkit/workflows/Build/badge.svg)
+[![PyPi License](https://img.shields.io/pypi/v/dotadevkit?branch=master&label=PyPi%20Version&logo=PyPi&logoColor=ffffff&labelColor=306998&color=FFD43B&style=flat)](https://pypi.org/project/dotadevkit/)
+[![Python Version](https://img.shields.io/pypi/pyversions/dotadevkit?+&label=Python&logo=Python&logoColor=ffffff&labelColor=306998&color=FFD43B&style=flat)](https://pypi.org/project/dotadevkit/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ### About
