@@ -17,9 +17,9 @@ pip install dotadevkit
 ```
 
 ### Usage
-Once installed, you will have access to the `dotadev` CLI. Run `dotadev --help` or `dotadev <command> --help` for further details.
+Once installed, you will have access to the `dotadevkit` CLI. Run `dotadevkit --help` or `dotadevkit <command> --help` for further details.
 ```
-Usage: dotadev [OPTIONS] COMMAND [ARGS]...
+Usage: dotadevkit [OPTIONS] COMMAND [ARGS]...
 
 Options:
   --help  Show this message and exit.
@@ -33,7 +33,7 @@ Commands:
 
 #### Evaluate
 ```
- dotadev evaluate \
+ dotadevkit evaluate \
         /path/to/detections/Task1_{:s}.txt \
         /path/to/dota/val/labelTxt/{:s}.txt \
         /path/to/text/file/of/image/names \
@@ -43,7 +43,7 @@ Commands:
 #### Merge
 
 ```
- dotadev merge \
+ dotadevkit merge \
         /path/to/dota/data/ \
         /path/to/destination/directory/ \
         8
@@ -54,7 +54,7 @@ Commands:
 Setting the `--images` flag only splits the images. If it is not set, both `images` and `labelTxt` undergo the split process.
 
 ```
- dotadev split \
+ dotadevkit split \
         /path/to/dota/data/images \
         /path/to/destination/directory/ \
         8 \
