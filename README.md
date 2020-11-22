@@ -31,33 +31,57 @@ Commands:
 
 ```
 
-#### Evaluate
-```
- dotadevkit evaluate \
-        /path/to/detections/Task1_{:s}.txt \
-        /path/to/dota/val/labelTxt/{:s}.txt \
-        /path/to/text/file/of/image/names \
-        1.0
-```
+Your dataset directory should look as follows:
+
+```markdown
+.
+├── train
+│   ├── images
+│   ├── labelTxt
+│   ├── train.txt
+
+``` 
+
+Refer [example](./example) directory in this repo for a concrete example
+
  
-#### Merge
-
-```
- dotadevkit merge \
-        /path/to/dota/data/ \
-        /path/to/destination/directory/ \
-        8
-```
-
 #### Split
 
-Setting the `--images` flag only splits the images. If it is not set, both `images` and `labelTxt` undergo the split process.
+1. Split only images with 8 processes
 
 ```
  dotadevkit split \
-        /path/to/dota/data/images \
-        /path/to/destination/directory/ \
+        ./example/images \
+        ./example_split/images \
         8 \
         --images
 ```
 
+2. Split `images` and `labelTxt` into tiles of size 800 x 800 with overlap of 200 pixels with 8 processes
+
+```
+ dotadevkit split \
+        ./example/ \
+        ./example_split/ \
+        8 \
+        800 \
+        200 
+```
+
+#### Merge
+
+```
+ dotadevkit merge \
+        ./example_split/dota_dets \
+        ./example_split/merged_dets \
+        8
+```
+
+#### Evaluate
+```
+ dotadevkit evaluate \
+        ./example_split/merged_dets/Task1_{:s}.txt \
+        ./example/labelTxt/{:s}.txt \
+        ./example/images.txt \
+        1.0
+```

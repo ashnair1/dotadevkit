@@ -1,0 +1,4 @@
+imagesource:GoogleEarth
+gsd:0.139152881468
+218 108 249 101 260 146 224 150 swimming-pool 0
+119 270 340 270 340 526 119 526 roundabout 0
