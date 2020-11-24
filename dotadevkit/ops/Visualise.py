@@ -3,14 +3,15 @@
 # Written by Jian Ding for DOTA_Devkit
 # --------------------------------------------------------
 
-import os
-import matplotlib.pyplot as plt
-from matplotlib.collections import PatchCollection
-from matplotlib.patches import Polygon, Circle
-import numpy as np
-import dota_utils as util
 from collections import defaultdict
+from pathlib import Path
+from matplotlib.collections import PatchCollection
+from matplotlib.patches import Circle, Polygon
+from dotadevkit.misc.dota_utils import parse_dota_poly
+
 import cv2
+import matplotlib.pyplot as plt
+import numpy as np
 
 
 def _isArrayLike(obj):
@@ -21,28 +22,33 @@ def _isArrayLike(obj):
 
 class DOTA:
     def __init__(self, basepath):
+        basepath = Path(basepath)
         self.basepath = basepath
-        self.labelpath = os.path.join(basepath, "labelTxt")
-        self.imagepath = os.path.join(basepath, "images")
-        self.imgpaths = util.GetFileFromThisRootDir(self.labelpath)
-        self.imglist = [util.custombasename(x) for x in self.imgpaths]
+        self.labelpath = basepath / "labelTxt"
+        self.imagepath = basepath / "images"
+        self.imgpaths = [lbl for lbl in self.labelpath.iterdir()]
+        self.imglist = [x.stem for x in self.imgpaths]
         self.catToImgs = defaultdict(list)
         self.ImgToAnns = defaultdict(list)
         self.createIndex()
 
     def createIndex(self):
         for filename in self.imgpaths:
-            objects = util.parse_dota_poly(filename)
-            imgid = util.custombasename(filename)
+            objects = parse_dota_poly(filename)
+            imgid = filename.stem
             self.ImgToAnns[imgid] = objects
             for obj in objects:
                 cat = obj["name"]
                 self.catToImgs[cat].append(imgid)
 
     def getImgIds(self, catNms=[]):
-        """
-        :param catNms: category names
-        :return: all the image ids contain the categories
+        """Get Image Ids
+
+        Args:
+            catNms ([str], optional): Category Names. Defaults to [].
+
+        Returns:
+            [dict]: Image ids that contain categories specified (catNms)
         """
         catNms = catNms if _isArrayLike(catNms) else [catNms]
         if len(catNms) == 0:
@@ -57,10 +63,18 @@ class DOTA:
         return list(imgids)
 
     def loadAnns(self, catNms=[], imgId=None, difficult=None):
-        """
-        :param catNms: category names
-        :param imgId: the img to load anns
-        :return: objects
+
+        """Load annotations
+
+        TODO: Currently only supports loading via category names
+
+        Args:
+            catNms ([str], optional): Category names. Defaults to [].
+            imgId (str, optional): Image Id. Defaults to None.
+            difficult ([type], optional): [description]. Defaults to None.
+
+        Returns:
+            [dict]: Annotations
         """
         catNms = catNms if _isArrayLike(catNms) else [catNms]
         objects = self.ImgToAnns[imgId]
@@ -69,13 +83,12 @@ class DOTA:
         outobjects = [obj for obj in objects if (obj["name"] in catNms)]
         return outobjects
 
-    def showAnns(self, objects, imgId, range):
-        """
-        :param catNms: category names
-        :param objects: objects to show
-        :param imgId: img to show
-        :param range: display range in the img
-        :return:
+    def showAnns(self, objects, imgId):
+        """Show annotations
+
+        Args:
+            objects ([dict]): objects to show
+            imgId (str): img to show
         """
         img = self.loadImgs(imgId)[0]
         plt.imshow(img)
@@ -101,28 +114,33 @@ class DOTA:
         ax.add_collection(p)
         p = PatchCollection(circles, facecolors="red")
         ax.add_collection(p)
+        plt.show()
 
     def loadImgs(self, imgids=[]):
+        """Load images
+
+        Args:
+            imgids (list, optional): Integer image ids. Defaults to [].
+
+        Returns:
+            [numpy.ndarray]: Loaded images
         """
-        :param imgids: integer ids specifying img
-        :return: loaded img objects
-        """
-        print("isarralike:", _isArrayLike(imgids))
         imgids = imgids if _isArrayLike(imgids) else [imgids]
         print("imgids:", imgids)
         imgs = []
         for imgid in imgids:
-            filename = os.path.join(self.imagepath, imgid + ".png")
+            filename = self.imagepath / (imgid + ".png")
             print("filename:", filename)
-            img = cv2.imread(filename)
+            img = cv2.imread(str(filename))
             imgs.append(img)
         return imgs
 
 
-# if __name__ == '__main__':
-#     examplesplit = DOTA('examplesplit')
-#     imgids = examplesplit.getImgIds(catNms=['plane'])
-#     img = examplesplit.loadImgs(imgids)
-#     for imgid in imgids:
-#         anns = examplesplit.loadAnns(imgId=imgid)
-#         examplesplit.showAnns(anns, imgid, 2)
+if __name__ == "__main__":
+    examplesplit = DOTA("/home/ashwin/Desktop/Projects/dotadevkit/example_split")
+    imgids = examplesplit.getImgIds(catNms=["plane"])
+    imgs = examplesplit.loadImgs(imgids)
+    if imgs:
+        for imgid in imgids:
+            anns = examplesplit.loadAnns(imgId=imgid)
+            examplesplit.showAnns(anns, imgid)

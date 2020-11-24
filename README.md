@@ -85,3 +85,13 @@ Refer [example](./example) directory in this repo for a concrete example
         ./example/images.txt \
         1.0
 ```
+
+#### Visualise
+
+Visualise images that have `plane` and `helicopter` categories.
+
+```
+ dotadevkit visualise \
+        ./example_split/ \
+        -cat plane -cat helicopter
+```
