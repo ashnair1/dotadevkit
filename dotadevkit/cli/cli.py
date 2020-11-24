@@ -1,5 +1,5 @@
 import click
-from dotadevkit.cli import merge, split, evaluate
+from dotadevkit.cli import merge, split, evaluate, visualise
 
 
 @click.group()
@@ -10,6 +10,7 @@ def cli():
 cli.add_command(evaluate)
 cli.add_command(merge)
 cli.add_command(split)
+cli.add_command(visualise)
 
 if __name__ == "__main__":
     cli()
