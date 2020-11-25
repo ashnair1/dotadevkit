@@ -3,61 +3,53 @@
 # Written by Jian Ding for DOTA_Devkit
 # --------------------------------------------------------
 
-import dota_utils as util
-import os
 import cv2
 import json
 
-wordname_15 = [
-    "plane",
-    "baseball-diamond",
-    "bridge",
-    "ground-track-field",
-    "small-vehicle",
-    "large-vehicle",
-    "ship",
-    "tennis-court",
-    "basketball-court",
-    "storage-tank",
-    "soccer-ball-field",
-    "roundabout",
-    "harbor",
-    "swimming-pool",
-    "helicopter",
-]
+from dotadevkit.misc.dota_utils import dota_classes, parse_dota_poly2
+from pathlib import Path
+
+website_links = {
+    "1.0": "https://captain-whu.github.io/DOTA/",
+    "1.5": "https://captain-whu.github.io/DOAI2019/dataset.html",
+}
 
 
-def DOTA2COCO(srcpath, destfile):
-    imageparent = os.path.join(srcpath, "images")
-    labelparent = os.path.join(srcpath, "labelTxt")
+def DOTA2COCO(srcpath, destfile, version="1.0"):
+    imageparent = srcpath / "images"
+    labelparent = srcpath / "labelTxt"
+    assert version in ["1.0", "1.5"]
+
+    if version == 1.5:
+        dota_classes.append("container-crane")
 
     data_dict = {}
     info = {
-        "contributor": "captain group",
+        "contributor": "Captain Group, Wuhan University",
         "data_created": "2018",
-        "description": "This is 1.0 version of DOTA dataset.",
-        "url": "http://captain.whu.edu.cn/DOTAweb/",
-        "version": "1.0",
+        "description": f"DOTA dataset version {version}",
+        "url": website_links[version],
+        "version": version,
         "year": 2018,
     }
     data_dict["info"] = info
     data_dict["images"] = []
     data_dict["categories"] = []
     data_dict["annotations"] = []
-    for idex, name in enumerate(wordname_15):
+
+    for idex, name in enumerate(dota_classes):
         single_cat = {"id": idex + 1, "name": name, "supercategory": name}
         data_dict["categories"].append(single_cat)
 
     inst_count = 1
     image_id = 1
     with open(destfile, "w") as f_out:
-        filenames = util.GetFileFromThisRootDir(labelparent)
+        filenames = [lbl for lbl in labelparent.iterdir()]
         for file in filenames:
-            basename = util.custombasename(file)
-            # image_id = int(basename[1:])
+            basename = file.stem
 
-            imagepath = os.path.join(imageparent, basename + ".png")
-            img = cv2.imread(imagepath)
+            imagepath = imageparent / (basename + ".png")
+            img = cv2.imread(str(imagepath))
             height, width, c = img.shape
 
             single_image = {}
@@ -68,11 +60,11 @@ def DOTA2COCO(srcpath, destfile):
             data_dict["images"].append(single_image)
 
             # annotations
-            objects = util.parse_dota_poly2(file)
+            objects = parse_dota_poly2(file)
             for obj in objects:
                 single_obj = {}
                 single_obj["area"] = obj["area"]
-                single_obj["category_id"] = wordname_15.index(obj["name"]) + 1
+                single_obj["category_id"] = dota_classes.index(obj["name"]) + 1
                 single_obj["segmentation"] = []
                 single_obj["segmentation"].append(obj["poly"])
                 single_obj["iscrowd"] = 0
@@ -94,4 +86,5 @@ def DOTA2COCO(srcpath, destfile):
 
 
 if __name__ == "__main__":
-    DOTA2COCO(r"/data0/data_dj/1024_new", r"/data0/data_dj/1024_new/DOTA_trainval1024.json")
+    out_dir = Path("/home/ashwin/Desktop/Projects/dotadevkit/example_split")
+    DOTA2COCO(out_dir, out_dir / "DOTA_example.json", version="1.0")
