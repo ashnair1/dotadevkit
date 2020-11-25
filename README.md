@@ -25,17 +25,18 @@ Options:
   --help  Show this message and exit.
 
 Commands:
-  evaluate  Run evaluation for both tasks on DOTA & DOTA 1.5.
-  merge     Merges annotations according to DOTA Tasks.
-  split     Splits images and annotations.
-
+  convert    Convert tiled DOTA annotations to COCO format.
+  evaluate   Run evaluation for both tasks on DOTA & DOTA 1.5.
+  merge      Merges annotations according to DOTA Tasks.
+  split      Splits images and annotations.
+  visualise  Visualise annotations.
 ```
 
 Your dataset directory should look as follows:
 
 ```markdown
 .
-├── train
+├── example
 │   ├── images
 │   ├── labelTxt
 │   ├── train.txt
