@@ -17,7 +17,7 @@ setup(
     author="Ashwin Nair",
     author_email="ash1995@gmail.com",
     description="""DOTA Devkit CLI""",
-    version="1.1.0",
+    version="1.2.0",
     url="https://github.com/ashnair1/dotadevkit",
     packages=find_packages(),
     package_dir={"dotadevkit": "dotadevkit"},
