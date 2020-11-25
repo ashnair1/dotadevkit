@@ -78,6 +78,9 @@ Refer [example](./example) directory in this repo for a concrete example
 ```
 
 #### Evaluate
+
+DOTA evaluation on specific task and dataset version.
+
 ```
  dotadevkit evaluate \
         ./example_split/merged_dets/Task1_{:s}.txt \
@@ -94,4 +97,14 @@ Visualise images that have `plane` and `helicopter` categories.
  dotadevkit visualise \
         ./example_split/ \
         -cat plane -cat helicopter
+```
+
+#### Convert
+
+Convert tiled DOTA annotations of specified version to MS-COCO format.
+
+```
+ dotadevkit convert \
+        ./example_split/ \
+        --version 1.0
 ```
