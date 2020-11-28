@@ -39,7 +39,7 @@ Your dataset directory should look as follows:
 ├── example
 │   ├── images
 │   ├── labelTxt
-│   ├── train.txt
+│   ├── images.txt
 
 ``` 
 
