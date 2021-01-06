@@ -104,19 +104,6 @@ def parse_dota_poly2(filename):
     return objects
 
 
-def parse_dota_rec(filename):
-    """
-    parse the dota ground truth in the bounding box format:
-    "xmin, ymin, xmax, ymax"
-    """
-    objects = parse_dota_poly(filename)
-    for obj in objects:
-        poly = obj["poly"]
-        bbox = dots4ToRec4(poly)
-        obj["bndbox"] = bbox
-    return objects
-
-
 # bounding box transfer for varies format
 
 
