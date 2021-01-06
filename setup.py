@@ -1,4 +1,11 @@
 from setuptools import Extension, find_packages, setup
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent
+PACKAGE_DIR = ROOT_DIR / "dotadevkit"
+
+with open(PACKAGE_DIR / "VERSION") as f:
+    _version = f.read().strip()
 
 # Parse requirements.txt
 with open("requirements.txt") as f:
@@ -17,7 +24,7 @@ setup(
     author="Ashwin Nair",
     author_email="ash1995@gmail.com",
     description="""DOTA Devkit CLI""",
-    version="1.3.0",
+    version=_version,
     url="https://github.com/ashnair1/dotadevkit",
     packages=find_packages(),
     package_dir={"dotadevkit": "dotadevkit"},

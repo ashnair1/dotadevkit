@@ -2,8 +2,6 @@
 # Modified by Ashwin Nair
 # Written by Jian Ding for DOTA_Devkit
 # --------------------------------------------------------
-import sys
-import codecs
 import numpy as np
 import math
 from shapely.geometry import Polygon
@@ -47,14 +45,7 @@ def parse_dota_poly(filename):
     [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
     """
     objects = []
-    # print('filename:', filename)
-    f = []
-    if sys.version_info >= (3, 5):
-        fd = open(filename, "r")
-        f = fd
-    elif sys.version_info >= 2.7:
-        fd = codecs.open(filename, "r")
-        f = fd
+    f = open(filename, "r")
     # count = 0
     while True:
         line = f.readline()
