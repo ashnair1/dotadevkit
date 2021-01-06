@@ -5,14 +5,8 @@
 import sys
 import codecs
 import numpy as np
-import shapely.geometry as shgeo
-import os
-import re
 import math
-
-"""
-    some basic functions which are useful for process DOTA data
-"""
+from shapely.geometry import Polygon
 
 dota_classes = [
     "plane",
@@ -31,24 +25,6 @@ dota_classes = [
     "swimming-pool",
     "helicopter",
 ]
-
-
-def custombasename(fullname):
-    return os.path.basename(os.path.splitext(fullname)[0])
-
-
-def GetFileFromThisRootDir(dir, ext=None):
-    allfiles = []
-    needExtFilter = ext is not None
-    for root, dirs, files in os.walk(dir):
-        for filespath in files:
-            filepath = os.path.join(root, filespath)
-            extension = os.path.splitext(filepath)[1][1:]
-            if needExtFilter and extension in ext:
-                allfiles.append(filepath)
-            elif not needExtFilter:
-                allfiles.append(filepath)
-    return allfiles
 
 
 def TuplePoly2Poly(poly):
@@ -110,7 +86,7 @@ def parse_dota_poly(filename):
                 (float(splitlines[4]), float(splitlines[5])),
                 (float(splitlines[6]), float(splitlines[7])),
             ]
-            gtpoly = shgeo.Polygon(object_struct["poly"])
+            gtpoly = Polygon(object_struct["poly"])
             object_struct["area"] = gtpoly.area
             # poly = list(map(lambda x:np.array(x), object_struct['poly']))
             # object_struct['long-axis'] = max(distance(poly[0], poly[1]), distance(poly[1], poly[2]))
@@ -201,68 +177,6 @@ def poly5Topoly4(poly):
             outpoly.append(poly[count * 2 + 1])
             count = count + 1
     return outpoly
-
-
-def groundtruth2Task1(srcpath, dstpath):
-    filelist = GetFileFromThisRootDir(srcpath)
-    # names = [custombasename(x.strip())for x in filelist]
-    filedict = {}
-    for cls in dota_classes:
-        fd = open(os.path.join(dstpath, "Task1_") + cls + r".txt", "w")
-        filedict[cls] = fd
-    for filepath in filelist:
-        objects = parse_dota_poly2(filepath)
-
-        subname = custombasename(filepath)
-        pattern2 = re.compile(r"__([\d+\.]+)__\d+___")
-        rate = re.findall(pattern2, subname)[0]
-
-        for obj in objects:
-            category = obj["name"]
-            difficult = obj["difficult"]
-            poly = obj["poly"]
-            if difficult == "2":
-                continue
-            if rate == "0.5":
-                outline = custombasename(filepath) + " " + "1" + " " + " ".join(map(str, poly))
-            elif rate == "1":
-                outline = custombasename(filepath) + " " + "0.8" + " " + " ".join(map(str, poly))
-            elif rate == "2":
-                outline = custombasename(filepath) + " " + "0.6" + " " + " ".join(map(str, poly))
-
-            filedict[category].write(outline + "\n")
-
-
-def Task2groundtruth_poly(srcpath, dstpath):
-    thresh = 0.1
-    filedict = {}
-    Tasklist = GetFileFromThisRootDir(srcpath, ".txt")
-
-    for Taskfile in Tasklist:
-        idname = custombasename(Taskfile).split("_")[-1]
-        # idname = datamap_inverse[idname]
-        f = open(Taskfile, "r")
-        lines = f.readlines()
-        for line in lines:
-            if len(line) == 0:
-                continue
-            # print('line:', line)
-            splitline = line.strip().split(" ")
-            filename = splitline[0]
-            confidence = splitline[1]
-            bbox = splitline[2:]
-            if float(confidence) > thresh:
-                if filename not in filedict:
-                    # filedict[filename] = codecs.open(os.path.join(dstpath, filename + '.txt'), 'w', 'utf_16')
-                    filedict[filename] = codecs.open(os.path.join(dstpath, filename + ".txt"), "w")
-                # poly = util.dots2ToRec8(bbox)
-                poly = bbox
-                #               filedict[filename].write(' '.join(poly) + ' ' + idname + '_' + str(round(float(confidence), 2)) + '\n')
-                # print('idname:', idname)
-
-                # filedict[filename].write(' '.join(poly) + ' ' + idname + '_' + str(round(float(confidence), 2)) + '\n')
-
-                filedict[filename].write(" ".join(poly) + " " + idname + "\n")
 
 
 def polygonToRotRectangle(bbox):
