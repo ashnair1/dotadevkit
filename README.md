@@ -3,7 +3,7 @@
 ![](https://github.com/ashnair1/dotadevkit/workflows/Build/badge.svg)
 [![PyPi License](https://img.shields.io/pypi/v/dotadevkit?branch=master&label=PyPi%20Version&logo=PyPi&logoColor=ffffff&labelColor=306998&color=FFD43B&style=flat)](https://pypi.org/project/dotadevkit/)
 [![Python Version](https://img.shields.io/pypi/pyversions/dotadevkit?+&label=Python&logo=Python&logoColor=ffffff&labelColor=306998&color=FFD43B&style=flat)](https://pypi.org/project/dotadevkit/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Code style: black](https://img.shields.io/badge/Code%20Style-Black-000000.svg)](https://github.com/psf/black)
 
 ### About
 This is a modified version of the original [DOTA_Devkit](https://github.com/CAPTAIN-WHU/DOTA_devkit). The devkit has had some issues regarding ease of installation and usage with the latter being a significant problem. This repo attemps to address these issues by providing a simple CLI for easier usage and cross-platform whls for easier installation. 
