@@ -18,7 +18,7 @@ def evaluate(detections, annotations, images, version, task1):
         detections (str): Merged detections directory
         annotations (str): Ground truth
         images (str): Path to text file of image names
-        version (str): DOTA version ["1.0", "1.5"]
+        version (str): DOTA version ["1.0", "1.5", "2.0"]
         task1 (bool): Task1 (Oriented BBox)
 
     Returns:

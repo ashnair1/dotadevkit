@@ -14,7 +14,7 @@ def convert(src, version):
     \b
     Args:
         src (str): Source directory containing tiled images & labels
-        version (str): Dataset version (1.0, 1.5)
+        version (str): Dataset version (1.0, 1.5, 2.0)
 
     Returns:
         None

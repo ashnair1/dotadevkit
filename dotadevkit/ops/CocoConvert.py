@@ -9,26 +9,24 @@ import json
 from dotadevkit.misc.dota_utils import dota_classes, parse_dota_poly2
 from pathlib import Path
 
-website_links = {
-    "1.0": "https://captain-whu.github.io/DOTA/",
-    "1.5": "https://captain-whu.github.io/DOAI2019/dataset.html",
-}
-
 
 def DOTA2COCO(srcpath, destfile, version="1.0"):
     imageparent = srcpath / "images"
     labelparent = srcpath / "labelTxt"
-    assert version in ["1.0", "1.5"]
+    assert version in ["1.0", "1.5", "2.0"]
 
-    if version == 1.5:
+    if version == "1.5":
         dota_classes.append("container-crane")
+
+    if version == "2.0":
+        dota_classes.extend(["container-crane", "airport", "helipad"])
 
     data_dict = {}
     info = {
         "contributor": "Captain Group, Wuhan University",
         "data_created": "2018",
         "description": f"DOTA dataset version {version}",
-        "url": website_links[version],
+        "url": "https://captain-whu.github.io/DOTA/dataset.html",
         "version": version,
         "year": 2018,
     }
