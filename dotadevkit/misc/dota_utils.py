@@ -26,6 +26,7 @@ dota_classes = [
 
 
 def TuplePoly2Poly(poly):
+    # Used in parse_dota_poly2
     outpoly = [
         poly[0][0],
         poly[0][1],
@@ -44,6 +45,7 @@ def parse_dota_poly(filename):
     parse the dota ground truth in the format:
     [(x1, y1), (x2, y2), (x3, y3), (x4, y4)]
     """
+    # Used in Visualise.py and parse_dota_poly2
     objects = []
     f = open(filename, "r")
     # count = 0
@@ -97,6 +99,7 @@ def parse_dota_poly2(filename):
     parse the dota ground truth in the format:
     [x1, y1, x2, y2, x3, y3, x4, y4]
     """
+    # Used by ImgSplit.py and CocoConvert.py
     objects = parse_dota_poly(filename)
     for obj in objects:
         obj["poly"] = TuplePoly2Poly(obj["poly"])
@@ -108,6 +111,7 @@ def parse_dota_poly2(filename):
 
 
 def dots4ToRec4(poly):
+    # Used by dots4ToRec8
     xmin, xmax, ymin, ymax = (
         min(poly[0][0], min(poly[1][0], min(poly[2][0], poly[3][0]))),
         max(poly[0][0], max(poly[1][0], max(poly[2][0], poly[3][0]))),
@@ -118,17 +122,20 @@ def dots4ToRec4(poly):
 
 
 def dots4ToRec8(poly):
+    # Unused
     xmin, ymin, xmax, ymax = dots4ToRec4(poly)
     return xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax
     # return dots2ToRec8(dots4ToRec4(poly))
 
 
 def dots2ToRec8(rec):
+    # Unused
     xmin, ymin, xmax, ymax = rec[0], rec[1], rec[2], rec[3]
     return xmin, ymin, xmax, ymin, xmax, ymax, xmin, ymax
 
 
 def poly5Topoly4(poly):
+    # Used
     distances = [
         cal_line_length(
             (poly[i * 2], poly[i * 2 + 1]),
@@ -158,6 +165,7 @@ def poly5Topoly4(poly):
 
 
 def polygonToRotRectangle(bbox):
+    # Unused
     """
     :param bbox: The polygon stored in format [x1, y1, x2, y2, x3, y3, x4, y4]
     :return: Rotated Rectangle in format [cx, cy, w, h, theta]
@@ -197,6 +205,7 @@ def cal_line_length(point1, point2):
 
 
 def get_best_begin_point(coordinate):
+    # Unused
     x1 = coordinate[0][0]
     y1 = coordinate[0][1]
     x2 = coordinate[1][0]
