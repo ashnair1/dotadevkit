@@ -20,7 +20,7 @@ def parse_gt(filename, version):
                 continue
             object_struct["name"] = splitline[8]
 
-            if version == "1.5":
+            if version in ["1.5", "2.0"]:
                 # DOTA 1.5 includes difficult annotations
                 # by setting all annotations as easy
                 object_struct["difficult"] = 0
@@ -201,10 +201,12 @@ def voc_eval(
 
 
 def evaluate(detpath, annopath, imagesetfile, version="1.0"):
-    assert version in ["1.0", "1.5"]
+    assert version in ["1.0", "1.5", "2.0"]
     classnames = dota_classes
     if version == "1.5":
         classnames = classnames + ["container-crane"]
+    if version == "2.0":
+        classnames = classnames + ["container-crane", "airport", "helipad"]
 
     classaps = []
     map = 0
