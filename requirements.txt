@@ -9,3 +9,4 @@ Shapely
 # Packaging
 setuptools>=40.6.3
 wheel>=0.32.3
+pillow>=10.0.0 # not directly required, pinned by Snyk to avoid a vulnerability
