@@ -7,5 +7,5 @@ opencv_contrib_python
 Shapely
 
 # Packaging
-setuptools>=40.6.3
+setuptools>=70.0.0
 wheel>=0.32.3
